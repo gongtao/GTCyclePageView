@@ -40,6 +40,12 @@ GTCyclePageViewDelegate inherit from `UIScrollViewDelegate`. The below method is
 - (void)didPageChangedCyclePageView:(GTCyclePageView *)cyclePageView
 ```
 
+The below method is called when a displayed cell is tapped.
+
+```objective-c
+- (void)cyclePageView:(GTCyclePageView *)cyclePageView didTouchCellAtIndex:(NSUInteger)index
+```
+
 ### Others
 
 Return the GTCyclePageViewCell object from unusable array by cellIdentifier.
