@@ -31,3 +31,39 @@ Use GTCyclePageViewDataSource to load page contents:
     return cell;
 }
 ```
+
+### GTCyclePageViewDelegate
+
+GTCyclePageViewDelegate inherit from `UIScrollViewDelegate`. The below method is called when the page changes.
+
+```objective-c
+- (void)didPageChangedCyclePageView:(GTCyclePageView *)cyclePageView
+```
+
+### Others
+
+Return the GTCyclePageViewCell object from unusable array by cellIdentifier.
+
+```objective-c
+- (GTCyclePageViewCell *)dequeueReusableCellWithIdentifier:(NSString *)cellIdentifier;
+```
+
+Scroll to next or pre page.
+
+```objective-c
+- (void)scrollToNextPage:(BOOL)animated;
+
+- (void)scrollToPrePage:(BOOL)animated;
+```
+
+The current page of GTCyclePageViewCell object. Set it to change page.
+
+```objective-c
+@property (nonatomic, assign) NSUInteger currentPage;
+```
+
+## Contact
+
+龚涛    Gong Tao    mail: gongtaoatbupt@gmail.com
+
+
