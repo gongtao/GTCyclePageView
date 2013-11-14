@@ -21,6 +21,8 @@
 		42E6640618346BE60032E747 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42E663E818346BE60032E747 /* UIKit.framework */; };
 		42E6640E18346BE60032E747 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 42E6640C18346BE60032E747 /* InfoPlist.strings */; };
 		42E6641018346BE60032E747 /* GTCyclePageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E6640F18346BE60032E747 /* GTCyclePageViewTests.m */; };
+		42E6641C18346C680032E747 /* GTCyclePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E6641B18346C680032E747 /* GTCyclePageView.m */; };
+		42E6641F1834709F0032E747 /* GTCyclePageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 42E6641E1834709F0032E747 /* GTCyclePageViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,10 @@
 		42E6640B18346BE60032E747 /* GTCyclePageViewTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GTCyclePageViewTests-Info.plist"; sourceTree = "<group>"; };
 		42E6640D18346BE60032E747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		42E6640F18346BE60032E747 /* GTCyclePageViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GTCyclePageViewTests.m; sourceTree = "<group>"; };
+		42E6641A18346C680032E747 /* GTCyclePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTCyclePageView.h; sourceTree = "<group>"; };
+		42E6641B18346C680032E747 /* GTCyclePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTCyclePageView.m; sourceTree = "<group>"; };
+		42E6641D1834709F0032E747 /* GTCyclePageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTCyclePageViewCell.h; sourceTree = "<group>"; };
+		42E6641E1834709F0032E747 /* GTCyclePageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTCyclePageViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +118,7 @@
 		42E663EA18346BE60032E747 /* GTCyclePageView */ = {
 			isa = PBXGroup;
 			children = (
+				42E6641918346C460032E747 /* Class */,
 				42E663F318346BE60032E747 /* AppDelegate.h */,
 				42E663F418346BE60032E747 /* AppDelegate.m */,
 				42E663F618346BE60032E747 /* Main.storyboard */,
@@ -150,6 +157,17 @@
 				42E6640C18346BE60032E747 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		42E6641918346C460032E747 /* Class */ = {
+			isa = PBXGroup;
+			children = (
+				42E6641A18346C680032E747 /* GTCyclePageView.h */,
+				42E6641B18346C680032E747 /* GTCyclePageView.m */,
+				42E6641D1834709F0032E747 /* GTCyclePageViewCell.h */,
+				42E6641E1834709F0032E747 /* GTCyclePageViewCell.m */,
+			);
+			path = Class;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,9 +267,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42E6641F1834709F0032E747 /* GTCyclePageViewCell.m in Sources */,
 				42E663FB18346BE60032E747 /* ViewController.m in Sources */,
 				42E663F518346BE60032E747 /* AppDelegate.m in Sources */,
 				42E663F118346BE60032E747 /* main.m in Sources */,
+				42E6641C18346C680032E747 /* GTCyclePageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

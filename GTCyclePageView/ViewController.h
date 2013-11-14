@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GTCyclePageView.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <GTCyclePageViewDataSource>
+{
+    GTCyclePageView *_cyclePageView;
+}
 
 @end
