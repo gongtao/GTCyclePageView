@@ -22,6 +22,7 @@
 	// Do any additional setup after loading the view, typically from a nib.
     _cyclePageView = [[GTCyclePageView alloc] initWithFrame:self.view.bounds];
     _cyclePageView.dataSource = self;
+    _cyclePageView.delegate = self;
     [self.view addSubview:_cyclePageView];
     
     [_cyclePageView reloadData];
@@ -105,6 +106,13 @@
     }
     
     return cell;
+}
+
+#pragma mark - GTCyclePageViewDelegate
+
+- (void)cyclePageView:(GTCyclePageView *)cyclePageView didTouchCellAtIndex:(NSUInteger)index
+{
+    NSLog(@"tap: %i", index);
 }
 
 @end

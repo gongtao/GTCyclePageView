@@ -26,6 +26,12 @@
  */
 - (void)_enqueueReusableCell:(GTCyclePageViewCell *)cell;
 
+/* Return a GTCyclePageViewCell object from DataSource.
+ */
+- (GTCyclePageViewCell *)_cyclePageViewWithIndex:(NSUInteger)index;
+
+- (void)_touchCell:(UITapGestureRecognizer *)gesture;
+
 @end
 
 @implementation GTCyclePageView
@@ -107,7 +113,7 @@
         [self _enqueueReusableCell:[_usingArray lastObject]];
         _currentPage = (_currentPage-1+pageNum)%pageNum;
         int lastPage = (_currentPage-1+pageNum)%pageNum;
-        GTCyclePageViewCell *cell = [self.dataSource cyclePageView:self index:lastPage];
+        GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:lastPage];
         [_usingArray insertObject:cell atIndex:0];
         [_scrollView addSubview:cell];
         [self _layoutCells];
@@ -117,7 +123,7 @@
         [self _enqueueReusableCell:[_usingArray objectAtIndex:0]];
         _currentPage = (_currentPage+1)%pageNum;
         int nextPage = (_currentPage+1)%pageNum;
-        GTCyclePageViewCell *cell = [self.dataSource cyclePageView:self index:nextPage];
+        GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:nextPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
         [self _layoutCells];
@@ -136,6 +142,28 @@
     [array addObject:cell];
 }
 
+- (GTCyclePageViewCell *)_cyclePageViewWithIndex:(NSUInteger)index
+{
+    GTCyclePageViewCell * cell = [self.dataSource cyclePageView:self index:index];
+    if ([[cell gestureRecognizers] count] == 0) {
+        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_touchCell:)];
+        [gesture setNumberOfTouchesRequired:1];
+        [gesture setNumberOfTapsRequired:1];
+        [cell addGestureRecognizer:gesture];
+    }
+    return cell;
+}
+
+- (void)_touchCell:(UITapGestureRecognizer *)gesture
+{
+    if ([self.delegate respondsToSelector:@selector(cyclePageView:didTouchCellAtIndex:)]) {
+        int index = [_usingArray indexOfObject:gesture.view];
+        int pageNum = self.numberOfPages;
+        index = (_currentPage+index-1+pageNum)%pageNum;
+        [self.delegate cyclePageView:self didTouchCellAtIndex:index];
+    }
+}
+
 #pragma mark - public
 
 - (void)reloadData
@@ -148,7 +176,7 @@
         return;
     }
     else if (pageNum == 1) {
-        GTCyclePageViewCell *cell = [self.dataSource cyclePageView:self index:_currentPage];
+        GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:_currentPage];
         [_scrollView addSubview:cell];
         [_usingArray addObject:cell];
     }
@@ -158,18 +186,18 @@
         }
         //last page init
         int lastPage = (_currentPage-1+pageNum)%pageNum;
-        GTCyclePageViewCell *cell = [self.dataSource cyclePageView:self index:lastPage];
+        GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:lastPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
         
         //current page init
-        cell = [self.dataSource cyclePageView:self index:_currentPage];
+        cell = [self _cyclePageViewWithIndex:_currentPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
         
         //next page init
         int nextPage = (_currentPage+1)%pageNum;
-        cell = [self.dataSource cyclePageView:self index:nextPage];
+        cell = [self _cyclePageViewWithIndex:nextPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
     }

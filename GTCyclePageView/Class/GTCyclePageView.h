@@ -72,4 +72,6 @@
 
 - (void)didPageChangedCyclePageView:(GTCyclePageView *)cyclePageView;
 
+- (void)cyclePageView:(GTCyclePageView *)cyclePageView didTouchCellAtIndex:(NSUInteger)index;
+
 @end
