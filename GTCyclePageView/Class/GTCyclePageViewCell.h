@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GTCyclePageViewCell : UIControl
+@interface GTCyclePageViewCell : UIView
 
 @property (nonatomic, retain) NSString *cellIdentifier;
 
