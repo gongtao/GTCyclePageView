@@ -10,6 +10,8 @@
 
 @interface ViewController ()
 
+- (void)buttonPressed:(id)sender;
+
 @end
 
 @implementation ViewController
@@ -23,12 +25,43 @@
     [self.view addSubview:_cyclePageView];
     
     [_cyclePageView reloadData];
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10.0, 100.0, 100.0, 100.0)];
+    [button setTitle:@"PrePage" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    button.tag = 0;
+    [self.view addSubview:button];
+    
+    button = [[UIButton alloc] initWithFrame:CGRectMake(210.0, 100.0, 100.0, 100.0)];
+    [button setTitle:@"NextPage" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    button.tag = 1;
+    [self.view addSubview:button];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    _cyclePageView.frame = self.view.bounds;
+}
+
+#pragma mark - Private
+
+- (void)buttonPressed:(id)sender
+{
+    if ([sender tag] == 0) {
+        [_cyclePageView scrollToPrePage:YES];
+    }
+    else if ([sender tag] == 1) {
+        [_cyclePageView scrollToNextPage:YES];
+    }
 }
 
 #pragma mark - GTCyclePageViewDataSource
@@ -38,7 +71,7 @@
     return 5;
 }
 
-- (GTCyclePageViewCell *)cyclePageView:(GTCyclePageView *)cyclePageView index:(NSUInteger)page
+- (GTCyclePageViewCell *)cyclePageView:(GTCyclePageView *)cyclePageView index:(NSUInteger)index
 {
     static NSString *cellIdentifier = @"cellIdentifier";
     GTCyclePageViewCell *cell = [cyclePageView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -46,7 +79,7 @@
         cell = [[GTCyclePageViewCell alloc] initWithReuseIdentifier:cellIdentifier];
     }
     
-    switch (page) {
+    switch (index) {
         case 0: {
             cell.backgroundColor = [UIColor purpleColor];
             break;

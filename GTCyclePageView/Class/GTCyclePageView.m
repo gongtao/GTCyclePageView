@@ -10,12 +10,20 @@
 
 @interface GTCyclePageView (Private)
 
+/* Remove all displayed cells into unusable dictionary.
+ */
 - (void)_clearData;
 
+/* Update all displayed cells' frames.
+ */
 - (void)_layoutCells;
 
+/* Change the current page, relayout displayed cells.
+ */
 - (void)_updatePageChange;
 
+/* Remove a displayed cell into unusable dictionary.
+ */
 - (void)_enqueueReusableCell:(GTCyclePageViewCell *)cell;
 
 @end
@@ -75,7 +83,7 @@
     __block CGRect frame = self.bounds;
     _scrollView.frame = frame;
     
-    int pageNum = [self numberOfPages];
+    int pageNum = self.numberOfPages;
     if (pageNum < 2) {
         _scrollView.contentSize = self.bounds.size;
         _scrollView.contentOffset = CGPointZero;
@@ -95,7 +103,7 @@
 - (void)_updatePageChange
 {
     if (_scrollView.contentOffset.x < 10.0) {
-        int pageNum = [self numberOfPages];
+        int pageNum = self.numberOfPages;
         [self _enqueueReusableCell:[_usingArray lastObject]];
         _currentPage = (_currentPage-1+pageNum)%pageNum;
         int lastPage = (_currentPage-1+pageNum)%pageNum;
@@ -105,7 +113,7 @@
         [self _layoutCells];
     }
     else if (_scrollView.contentOffset.x > 2*self.bounds.size.width-10.0) {
-        int pageNum = [self numberOfPages];
+        int pageNum = self.numberOfPages;
         [self _enqueueReusableCell:[_usingArray objectAtIndex:0]];
         _currentPage = (_currentPage+1)%pageNum;
         int nextPage = (_currentPage+1)%pageNum;
@@ -113,6 +121,10 @@
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
         [self _layoutCells];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(didPageChangedCyclePageView:)]) {
+        [self.delegate didPageChangedCyclePageView:self];
     }
 }
 
@@ -130,7 +142,7 @@
 {
     [self _clearData];
     
-    int pageNum = [self numberOfPages];
+    int pageNum = self.numberOfPages;
     if (pageNum == 0) {
         _currentPage = 0;
         return;
@@ -144,18 +156,18 @@
         if (_currentPage >= pageNum) {
             _currentPage = pageNum-1;
         }
-        //last page
+        //last page init
         int lastPage = (_currentPage-1+pageNum)%pageNum;
         GTCyclePageViewCell *cell = [self.dataSource cyclePageView:self index:lastPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
         
-        //current page
+        //current page init
         cell = [self.dataSource cyclePageView:self index:_currentPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
         
-        //next page
+        //next page init
         int nextPage = (_currentPage+1)%pageNum;
         cell = [self.dataSource cyclePageView:self index:nextPage];
         [_usingArray addObject:cell];
@@ -163,14 +175,6 @@
     }
     
     [self _layoutCells];
-}
-
-- (NSUInteger)numberOfPages
-{
-    if (self.dataSource) {
-        return [self.dataSource numberOfPagesInCyclePageView:self];
-    }
-    return 0;
 }
 
 - (GTCyclePageViewCell *)dequeueReusableCellWithIdentifier:(NSString *)cellIdentifier
@@ -184,22 +188,111 @@
     return nil;
 }
 
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)scrollToNextPage:(BOOL)animated
 {
-    
+    if (self.numberOfPages < 2) {
+        return;
+    }
+    CGRect frame = self.scrollView.bounds;
+    frame.origin.x = 2*frame.size.width;
+    [_scrollView scrollRectToVisible:frame animated:animated];
 }
+
+- (void)scrollToPrePage:(BOOL)animated
+{
+    if (self.numberOfPages < 2) {
+        return;
+    }
+    CGRect frame = self.scrollView.bounds;
+    frame.origin.x = 0.0;
+    [_scrollView scrollRectToVisible:frame animated:animated];
+}
+
+#pragma mark - Property
+
+- (NSUInteger)numberOfPages
+{
+    if (self.dataSource) {
+        return [self.dataSource numberOfPagesInCyclePageView:self];
+    }
+    return 0;
+}
+
+- (void)setCurrentPage:(NSUInteger)currentPage
+{
+    if (_currentPage != currentPage && currentPage < self.numberOfPages) {
+        _currentPage = currentPage;
+        [self reloadData];
+        
+        if ([self.delegate respondsToSelector:@selector(didPageChangedCyclePageView:)]) {
+            [self.delegate didPageChangedCyclePageView:self];
+        }
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     [self _updatePageChange];
+    
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)]) {
+        [self.delegate scrollViewDidEndDecelerating:scrollView];
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if (!decelerate) {
         [self _updatePageChange];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)]) {
+        [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
+        [self.delegate scrollViewDidScroll:scrollView];
+    }
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    [self _updatePageChange];
+    
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidEndScrollingAnimation:)]) {
+        [self.delegate scrollViewDidEndScrollingAnimation:scrollView];
+    }
+}
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
+{
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidScrollToTop:)]) {
+        [self.delegate scrollViewDidScrollToTop:scrollView];
+    }
+}
+
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+{
+    if ([self.delegate respondsToSelector:@selector(scrollViewWillBeginDecelerating:)]) {
+        [self.delegate scrollViewWillBeginDecelerating:scrollView];
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([self.delegate respondsToSelector:@selector(scrollViewWillBeginDragging:)]) {
+        [self.delegate scrollViewWillBeginDragging:scrollView];
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    if ([self.delegate respondsToSelector:@selector(scrollViewWillEndDragging:withVelocity:targetContentOffset:)]) {
+        [self.delegate scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
     }
 }
 
