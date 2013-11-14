@@ -10,7 +10,7 @@ It's based on `UIScrollView`, and its delegate inherit from `UIScrollViewDelegat
 
 ### GTCyclePageViewDataSource
 
-Use GTCyclePageViewDataSource to load page contents:
+Use GTCyclePageViewDataSource to load page contents. GTCyclePageViewCell is a sub class of `UIView`. You can add subViews to GTCyclePageViewCell object, or write your own page content view that inherits from GTCyclePageViewCell class.
 
 ```objective-c
 - (NSUInteger)numberOfPagesInCyclePageView:(GTCyclePageView *)cyclePageView
