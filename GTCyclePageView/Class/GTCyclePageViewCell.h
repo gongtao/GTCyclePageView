@@ -12,6 +12,8 @@
 
 @property (nonatomic, retain) NSString *cellIdentifier;
 
+@property (nonatomic, assign) NSUInteger page;
+
 - (id)initWithReuseIdentifier:(NSString *)cellIdentifier;
 
 @end

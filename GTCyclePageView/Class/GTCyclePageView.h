@@ -41,6 +41,11 @@
 
 - (void)reloadData;
 
+/* Return the GTCyclePageViewCell object by index.
+ If cell is not displayed, return nil.
+ */
+- (GTCyclePageViewCell *)cyclePageViewCellAtIndex:(NSUInteger)index;
+
 /* Return the GTCyclePageViewCell object from unusable array by cellIdentifier.
  */
 - (GTCyclePageViewCell *)dequeueReusableCellWithIdentifier:(NSString *)cellIdentifier;

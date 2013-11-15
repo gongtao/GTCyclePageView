@@ -145,6 +145,7 @@
 - (GTCyclePageViewCell *)_cyclePageViewWithIndex:(NSUInteger)index
 {
     GTCyclePageViewCell * cell = [self.dataSource cyclePageView:self index:index];
+    cell.page = index;
     if ([[cell gestureRecognizers] count] == 0) {
         UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_touchCell:)];
         [gesture setNumberOfTouchesRequired:1];
@@ -203,6 +204,18 @@
     }
     
     [self _layoutCells];
+}
+
+- (GTCyclePageViewCell *)cyclePageViewCellAtIndex:(NSUInteger)index
+{
+    __block GTCyclePageViewCell *cell = nil;
+    [_usingArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        if (index == ((GTCyclePageViewCell *)obj).page) {
+            cell = obj;
+            return;
+        }
+    }];
+    return cell;
 }
 
 - (GTCyclePageViewCell *)dequeueReusableCellWithIdentifier:(NSString *)cellIdentifier
