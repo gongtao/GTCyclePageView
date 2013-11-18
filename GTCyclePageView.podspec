@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios
 
-  s.source       = { :git => "https://github.com/gongtao/GTCyclePageView.git", :commit => "1e84ac50493d6c5ae48aac572193b241213f9225", :tag =>"1.0.0" }
+  s.source       = { :git => "https://github.com/gongtao/GTCyclePageView.git", :commit => "11874389b1f2470249f8d681cab4dd24a0ed1171", :tag =>"1.0.0" }
 
   s.source_files  = 'Class/*.{h,m}'
 
