@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
 
   s.homepage     = "https://github.com/gongtao/GTCyclePageView"
 
-  s.license      = { :type => 'MIT', :file => 'LICENSE' }
+  s.license      = { :type => 'MIT', :file => 'LICENSE.txt' }
 
   s.author       = { "gongtao" => "gongtao@jike.com" }
 
