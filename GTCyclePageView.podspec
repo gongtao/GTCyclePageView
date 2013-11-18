@@ -5,14 +5,13 @@ Pod::Spec.new do |s|
   s.summary      = "Display page content circularly in UIScrollView"
 
   s.homepage     = "https://github.com/gongtao/GTCyclePageView"
-
   s.license      = { :type => 'MIT', :file => 'LICENSE.txt' }
 
   s.author       = { "gongtao" => "gongtao@jike.com" }
-
+  
   s.platform     = :ios
 
-  s.source       = { :git => "https://github.com/gongtao/GTCyclePageView.git", :commit => "f4eecea58ab96ac0fe33683fbbecf1b32e151d5f", :tag =>"1.0.0" }
+  s.source       = { :git => "https://github.com/gongtao/GTCyclePageView.git", :tag => "1.0.0" }
 
   s.source_files  = 'Class/*.{h,m}'
 
