@@ -89,13 +89,13 @@
     __block CGRect frame = self.bounds;
     _scrollView.frame = frame;
     
-    int pageNum = self.numberOfPages;
+    NSUInteger pageNum = self.numberOfPages;
     if (pageNum < 2) {
         _scrollView.contentSize = self.bounds.size;
         _scrollView.contentOffset = CGPointZero;
     }
     else {
-        _scrollView.contentSize = CGSizeMake(self.bounds.size.width*3, self.bounds.size.height);
+        _scrollView.contentSize = CGSizeMake(self.bounds.size.width * 3, self.bounds.size.height);
         _scrollView.contentOffset = CGPointMake(self.bounds.size.width, 0.0);
     }
     
@@ -108,25 +108,49 @@
 
 - (void)_updatePageChange
 {
-    if (_scrollView.contentOffset.x < 10.0) {
-        int pageNum = self.numberOfPages;
+    CGPoint point = _scrollView.contentOffset;
+    if (point.x < 0.5 * self.bounds.size.width) {
+        NSUInteger pageNum = self.numberOfPages;
         [self _enqueueReusableCell:[_usingArray lastObject]];
-        _currentPage = (_currentPage-1+pageNum)%pageNum;
-        int lastPage = (_currentPage-1+pageNum)%pageNum;
+        _currentPage = (_currentPage - 1 + pageNum) % pageNum;
+        NSUInteger lastPage = (_currentPage - 1 + pageNum) % pageNum;
         GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:lastPage];
         [_usingArray insertObject:cell atIndex:0];
         [_scrollView addSubview:cell];
-        [self _layoutCells];
+        
+        __block CGRect frame = self.bounds;
+        _scrollView.frame = frame;
+        [_usingArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            GTCyclePageViewCell *cell = obj;
+            cell.frame = frame;
+            frame.origin.x += frame.size.width;
+        }];
+        
+        point.x += self.bounds.size.width;
+        _scrollView.contentOffset = point;
     }
-    else if (_scrollView.contentOffset.x > 2*self.bounds.size.width-10.0) {
-        int pageNum = self.numberOfPages;
+    else if (point.x > 1.5 * self.bounds.size.width) {
+        NSUInteger pageNum = self.numberOfPages;
         [self _enqueueReusableCell:[_usingArray objectAtIndex:0]];
-        _currentPage = (_currentPage+1)%pageNum;
-        int nextPage = (_currentPage+1)%pageNum;
+        _currentPage = (_currentPage + 1) % pageNum;
+        NSUInteger nextPage = (_currentPage + 1) % pageNum;
         GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:nextPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
-        [self _layoutCells];
+        
+        __block CGRect frame = self.bounds;
+        _scrollView.frame = frame;
+        [_usingArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            GTCyclePageViewCell *cell = obj;
+            cell.frame = frame;
+            frame.origin.x += frame.size.width;
+        }];
+        
+        point.x -= self.bounds.size.width;
+        _scrollView.contentOffset = point;
+    }
+    else {
+        return;
     }
     
     if ([self.delegate respondsToSelector:@selector(didPageChangedCyclePageView:)]) {
@@ -158,9 +182,9 @@
 - (void)_touchCell:(UITapGestureRecognizer *)gesture
 {
     if ([self.delegate respondsToSelector:@selector(cyclePageView:didTouchCellAtIndex:)]) {
-        int index = [_usingArray indexOfObject:gesture.view];
-        int pageNum = self.numberOfPages;
-        index = (_currentPage+index-1+pageNum)%pageNum;
+        NSUInteger index = [_usingArray indexOfObject:gesture.view];
+        NSUInteger pageNum = self.numberOfPages;
+        index = (_currentPage + index - 1 + pageNum) % pageNum;
         [self.delegate cyclePageView:self didTouchCellAtIndex:index];
     }
 }
@@ -171,7 +195,7 @@
 {
     [self _clearData];
     
-    int pageNum = self.numberOfPages;
+    NSUInteger pageNum = self.numberOfPages;
     if (pageNum == 0) {
         _currentPage = 0;
         return;
@@ -186,7 +210,7 @@
             _currentPage = pageNum-1;
         }
         //last page init
-        int lastPage = (_currentPage-1+pageNum)%pageNum;
+        NSUInteger lastPage = (_currentPage-1 + pageNum) % pageNum;
         GTCyclePageViewCell *cell = [self _cyclePageViewWithIndex:lastPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
@@ -197,7 +221,7 @@
         [_scrollView addSubview:cell];
         
         //next page init
-        int nextPage = (_currentPage+1)%pageNum;
+        NSUInteger nextPage = (_currentPage + 1) % pageNum;
         cell = [self _cyclePageViewWithIndex:nextPage];
         [_usingArray addObject:cell];
         [_scrollView addSubview:cell];
@@ -275,8 +299,6 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self _updatePageChange];
-    
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)]) {
         [self.delegate scrollViewDidEndDecelerating:scrollView];
     }
@@ -284,10 +306,6 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    if (!decelerate) {
-        [self _updatePageChange];
-    }
-    
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)]) {
         [self.delegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
     }
@@ -295,6 +313,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    [self _updatePageChange];
+    
     if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
         [self.delegate scrollViewDidScroll:scrollView];
     }
@@ -302,8 +322,6 @@
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
 {
-    [self _updatePageChange];
-    
     if ([self.delegate respondsToSelector:@selector(scrollViewDidEndScrollingAnimation:)]) {
         [self.delegate scrollViewDidEndScrollingAnimation:scrollView];
     }

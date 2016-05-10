@@ -112,7 +112,7 @@
 
 - (void)cyclePageView:(GTCyclePageView *)cyclePageView didTouchCellAtIndex:(NSUInteger)index
 {
-    NSLog(@"tap: %i", index);
+    NSLog(@"tap: %lu", (unsigned long)index);
 }
 
 @end
